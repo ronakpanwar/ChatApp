@@ -1,0 +1,1 @@
+export const UserApi = "http://localhost:8000/api/user";
