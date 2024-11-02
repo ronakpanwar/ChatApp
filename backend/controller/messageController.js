@@ -1,5 +1,6 @@
 import { Conversation } from "../models/conversationModel.js";
 import { Message } from "../models/messageModel.js";
+import {getReciverSocketId, io} from '../index.js'
 
 export const sendMessage = async(req,res)=>{
     try {
@@ -11,7 +12,8 @@ export const sendMessage = async(req,res)=>{
         })
         if(!gotConversation){
             gotConversation = await Conversation.create({
-                participants:[senderId,reciverId]
+                participants:[senderId,reciverId],
+                
             })
         }
 
@@ -23,11 +25,16 @@ export const sendMessage = async(req,res)=>{
         if(newMessage){
             gotConversation.messages.push(newMessage._id)
         }
-        await gotConversation.save();
+        await Promise.all([gotConversation.save() , newMessage.save()])
+
+        const reciverSocketId = getReciverSocketId(reciverId);
+        if(reciverSocketId){
+            io.to(reciverSocketId).emit('newMessage' , newMessage)
+        }
         
         return res.status(200).json({
-            success:true,
-            message:"Mesage send successfully..."
+         
+            newMessage
         })
 
     } catch (error) {
@@ -46,10 +53,7 @@ export const getMessages = async (req,res)=>{
             participants:{$all:[senderId,reciverId]}
         }).populate("messages")
 
-        return res.status(200).json({
-            success:true,
-            conversation
-        })
+        return res.status(200).json(conversation?.messages)
         
     } catch (error) {
          res.status(500).json({success:false , message:"Internal server error..."})
