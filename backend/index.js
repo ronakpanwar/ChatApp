@@ -55,6 +55,8 @@ io.on('connection', (socket) => {
 });
 
 // Set up routes
+app.get("/" , (req,res)=>{
+  res.json('Hello') } );
 app.use('/api/user', userRouter);
 app.use('/api/message', messageRouter);
 
