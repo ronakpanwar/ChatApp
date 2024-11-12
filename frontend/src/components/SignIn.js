@@ -50,8 +50,10 @@ const SignIn = () => {
   return (
     <div className='min-w-96 m-auto'>
       <div className=" w-full px-10    bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 border-2 rounded-md  border-white">
-        <h1 className='font-bold text-black text-center mt-4 text-3xl'>Signin</h1>
 
+        
+        <h1 className='font-bold text-black text-center mt-4 text-3xl'>Signin</h1>
+   
         <form action="" onSubmit={handleSubmit} className=''>
 
           <div className="form-control mb-1">
